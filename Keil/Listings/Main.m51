@@ -1,0 +1,154 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/17/2022  16:28:44  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+E:\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj TO .\Objects\Main PRINT (.\Listings\Main.m51) RAMSIZ
+>> E (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\main.obj (MAIN)
+  E:\KEIL5\C51\LIB\C51S.LIB (?C_INIT)
+  E:\KEIL5\C51\LIB\C51S.LIB (?C?CLDPTR)
+  E:\KEIL5\C51\LIB\C51S.LIB (?C?LLDIIDATA)
+
+
+LINK MAP OF MODULE:  .\Objects\Main (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000EH     UNIT         ?DT?MAIN
+            DATA    0016H     0008H     UNIT         _DATA_GROUP_
+            IDATA   001EH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     UNIT         ?PR?PAGE_3?MAIN
+                    0006H     0005H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     009EH     UNIT         ?CO?MAIN
+            CODE    00ACH     008CH     UNIT         ?C_C51STARTUP
+            CODE    0138H     0076H     UNIT         ?PR?KEYEVENT?MAIN
+            CODE    01AEH     0054H     UNIT         ?PR?_DISPLAY_STRING?MAIN
+            CODE    0202H     0051H     UNIT         ?PR?SHOW_BOOT?MAIN
+            CODE    0253H     0039H     UNIT         ?C?LIB_CODE
+            CODE    028CH     0032H     UNIT         ?PR?SHOW_MAIN?MAIN
+            CODE    02BEH     002CH     UNIT         ?PR?SHOW_PAGE?MAIN
+            CODE    02EAH     0027H     UNIT         ?PR?_DELAY_NS?MAIN
+            CODE    0311H     0024H     UNIT         ?PR?INTERRUPTTIMER0?MAIN
+            CODE    0335H     001BH     UNIT         ?PR?MAIN?MAIN
+            CODE    0350H     0019H     UNIT         ?PR?LCD_INIT?MAIN
+            CODE    0369H     0019H     UNIT         ?C_INITSEG
+            CODE    0382H     0013H     UNIT         ?PR?PAGE_1?MAIN
+            CODE    0395H     0012H     UNIT         ?PR?_WRITE_CMD?MAIN
+            CODE    03A7H     0012H     UNIT         ?PR?_WRITE_DAT?MAIN
+            CODE    03B9H     000DH     UNIT         ?PR?PAGE_2?MAIN
+            CODE    03C6H     000DH     UNIT         ?PR?PAGE_4?MAIN
+            CODE    03D3H     000DH     UNIT         ?PR?PAGE_5?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Main (?C_STARTUP)
+
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/17/2022  16:28:44  PAGE 2
+
+
+SEGMENT                            DATA_GROUP 
+  +--> CALLED SEGMENT            START    LENGTH
+------------------------------------------------
+?C_C51STARTUP                    -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                    -----    -----
+  +--> ?PR?KEYEVENT?MAIN
+
+?PR?KEYEVENT?MAIN                -----    -----
+  +--> ?PR?_DELAY_NS?MAIN
+  +--> ?PR?SHOW_PAGE?MAIN
+  +--> ?PR?SHOW_BOOT?MAIN
+
+?PR?_DELAY_NS?MAIN               001AH    0004H
+
+?PR?SHOW_PAGE?MAIN               -----    -----
+  +--> ?PR?_WRITE_CMD?MAIN
+  +--> ?PR?PAGE_1?MAIN
+  +--> ?PR?PAGE_2?MAIN
+  +--> ?PR?PAGE_3?MAIN
+  +--> ?PR?PAGE_4?MAIN
+  +--> ?PR?PAGE_5?MAIN
+
+?PR?_WRITE_CMD?MAIN              -----    -----
+  +--> ?PR?_DELAY_NS?MAIN
+
+?PR?PAGE_1?MAIN                  -----    -----
+  +--> ?CO?MAIN
+  +--> ?PR?_DISPLAY_STRING?MAIN
+
+?PR?_DISPLAY_STRING?MAIN         0016H    0004H
+  +--> ?PR?_WRITE_CMD?MAIN
+  +--> ?PR?_WRITE_DAT?MAIN
+
+?PR?_WRITE_DAT?MAIN              -----    -----
+  +--> ?PR?_DELAY_NS?MAIN
+
+?PR?PAGE_2?MAIN                  -----    -----
+  +--> ?CO?MAIN
+  +--> ?PR?_DISPLAY_STRING?MAIN
+
+?PR?PAGE_3?MAIN                  -----    -----
+  +--> ?PR?SHOW_MAIN?MAIN
+
+?PR?SHOW_MAIN?MAIN               -----    -----
+  +--> ?CO?MAIN
+  +--> ?PR?_DISPLAY_STRING?MAIN
+
+?PR?PAGE_4?MAIN                  -----    -----
+  +--> ?CO?MAIN
+  +--> ?PR?_DISPLAY_STRING?MAIN
+
+?PR?PAGE_5?MAIN                  -----    -----
+  +--> ?CO?MAIN
+  +--> ?PR?_DISPLAY_STRING?MAIN
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/17/2022  16:28:44  PAGE 3
+
+
+
+?PR?SHOW_BOOT?MAIN               -----    -----
+  +--> ?PR?LCD_INIT?MAIN
+  +--> ?PR?_DELAY_NS?MAIN
+  +--> ?CO?MAIN
+  +--> ?PR?_DISPLAY_STRING?MAIN
+  +--> ?PR?SHOW_MAIN?MAIN
+
+?PR?LCD_INIT?MAIN                -----    -----
+  +--> ?PR?_WRITE_CMD?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Main (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C?CLDPTR
+  C:0253H         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?LLDIIDATA
+  C:0275H         PUBLIC        ?C?LLDIIDATA
+  C:026CH         PUBLIC        ?C?LLDIIDATA1
+  C:026EH         PUBLIC        ?C?LLDIIDATA8
+  -------         ENDMOD        ?C?LLDIIDATA
+
+Program Size: data=31.0 xdata=0 code=987
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

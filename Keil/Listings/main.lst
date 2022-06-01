@@ -1,0 +1,273 @@
+C51 COMPILER V9.02   MAIN                                                                  05/17/2022 16:28:44 PAGE 1   
+
+
+C51 COMPILER V9.02, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: E:\Keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE PRINT(.\Listings\main.lst) TABS(2) OBJECT(
+                    -.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          
+   4          #define GPIO_LCD P0
+   5          
+   6          sbit GPIO_RS = P1^0;
+   7          sbit GPIO_RW = P1^1;
+   8          sbit GPIO_E = P1^2;
+   9          sbit GPIO_BTN_LAST = P1^3;
+  10          sbit GPIO_BTN_NEXT = P1^4;
+  11          sbit GPIO_BTN_OK = P1^5;
+  12          sbit GPIO_LED_RED = P1^6;
+  13          sbit GPIO_LED_GREEN = P1^7;
+  14          
+  15          unsigned long i = 0;
+  16          unsigned long sec = 0;
+  17          unsigned int index = 3;
+  18          unsigned int isboot = 0;
+  19          
+  20          void KeyEvent();
+  21          void Show_Main();
+  22          void Show_Boot();
+  23          void Show_Page();
+  24          void Page_1();
+  25          void Page_2();
+  26          void Page_3();
+  27          void Page_4();
+  28          void Page_5();
+  29          void Display_String(unsigned char row, unsigned char col, unsigned char *dat);
+  30          void Lcd_Init();
+  31          void Write_CMD(unsigned char cmd);
+  32          void Write_DAT(unsigned char dat);
+  33          void Delay_ns(unsigned long ns);
+  34          
+  35          void main()
+  36          {
+  37   1        TMOD &= 0xF0;
+  38   1        TMOD |= 0x01;
+  39   1        EA = 1;
+  40   1        TH0 = 0xFC;
+  41   1        TL0 = 0x67;
+  42   1        ET0 = 1;
+  43   1        TR0 = 1;
+  44   1        GPIO_LED_RED = 0;
+  45   1        GPIO_LED_GREEN = 0;
+  46   1        while(1)
+  47   1        {
+  48   2          KeyEvent();
+  49   2        }
+  50   1      }
+  51          
+  52          void Show_Boot();
+  53          void KeyEvent()
+  54          {
+C51 COMPILER V9.02   MAIN                                                                  05/17/2022 16:28:44 PAGE 2   
+
+  55   1        if(GPIO_BTN_LAST == 0)
+  56   1        {
+  57   2          Delay_ns(1000);
+  58   2          if(GPIO_BTN_LAST == 0)
+  59   2          {
+  60   3            index--;
+  61   3            if(index < 1)
+  62   3              index = 5;
+  63   3            Show_Page();
+  64   3          }
+  65   2          while(!GPIO_BTN_LAST);
+  66   2        }
+  67   1      
+  68   1        if(GPIO_BTN_NEXT == 0)
+  69   1        {
+  70   2          Delay_ns(1000);
+  71   2          if(GPIO_BTN_NEXT == 0)
+  72   2          {
+  73   3            index++;
+  74   3            if(index > 5)
+  75   3              index = 1;
+  76   3            Show_Page();
+  77   3          }
+  78   2          while(!GPIO_BTN_NEXT);
+  79   2        }
+  80   1      
+  81   1        if(GPIO_BTN_OK == 0)
+  82   1        {
+  83   2          Delay_ns(1000);
+  84   2          if(GPIO_BTN_OK == 0)
+  85   2          {
+  86   3            if(isboot == 0)
+  87   3            {
+  88   4              Show_Boot();
+  89   4              isboot = 1;
+  90   4            }
+  91   3          }
+  92   2          while(!GPIO_BTN_OK);
+  93   2        }
+  94   1      }
+  95          
+  96          void Show_Main()
+  97          {
+  98   1        GPIO_LED_RED = 0;
+  99   1        GPIO_LED_GREEN = 1;
+ 100   1        Display_String(1,2,"DATA:2022/05/17");
+ 101   1        Display_String(2,2,"TIME:AM 12:30");
+ 102   1        Display_String(3,2,"STEP:12000");
+ 103   1        Display_String(4,2,"FREQ:98bpm safe");
+ 104   1      }
+ 105          
+ 106          void Show_Boot()
+ 107          {
+ 108   1        Lcd_Init();
+ 109   1        Delay_ns(10000);
+ 110   1        GPIO_LED_RED = 1;
+ 111   1        Display_String(2,2,"STARTING UP.");
+ 112   1        Display_String(2,2,"STARTING UP..");
+ 113   1        Display_String(2,2,"STARTING UP...");
+ 114   1        Delay_ns(10000);
+ 115   1        Display_String(2,2,"READY.           ");
+ 116   1        Display_String(2,2,"READY..");
+C51 COMPILER V9.02   MAIN                                                                  05/17/2022 16:28:44 PAGE 3   
+
+ 117   1        Display_String(2,2,"READY...");
+ 118   1        Delay_ns(10000);
+ 119   1        Show_Main();
+ 120   1      }
+ 121          
+ 122          void Show_Page()
+ 123          {
+ 124   1        Write_CMD(0x01);
+ 125   1        switch(index)
+ 126   1        {
+ 127   2          case 1:
+ 128   2            Page_1();
+ 129   2            break;
+ 130   2          case 2:
+ 131   2            Page_2();
+ 132   2            break;
+ 133   2          case 3:
+ 134   2            Page_3();
+ 135   2            break;
+ 136   2          case 4:
+ 137   2            Page_4();
+ 138   2            break;
+ 139   2          case 5:
+ 140   2            Page_5();
+ 141   2            break;
+ 142   2        }
+ 143   1      }
+ 144          
+ 145          unsigned int num1 = 0;
+ 146          void Page_1()
+ 147          {
+ 148   1        Display_String(1,2,"Place input num1:" + num1);
+ 149   1        
+ 150   1      }
+ 151          
+ 152          void Page_2()
+ 153          {
+ 154   1      
+ 155   1        Display_String(1,2,"2");
+ 156   1      }
+ 157          
+ 158          void Page_3()
+ 159          {
+ 160   1        Show_Main();
+ 161   1      }
+ 162          
+ 163          void Page_4()
+ 164          {
+ 165   1        Display_String(1,2,"4");
+ 166   1      }
+ 167          
+ 168          void Page_5()
+ 169          {
+ 170   1        Display_String(1,2,"5");
+ 171   1      }
+ 172          
+ 173          void Display_String(unsigned char row, unsigned char col, unsigned char *dat)
+ 174          {
+ 175   1        switch(row)
+ 176   1        {
+ 177   2          case 1:
+ 178   2            Write_CMD(0x80 + col);
+C51 COMPILER V9.02   MAIN                                                                  05/17/2022 16:28:44 PAGE 4   
+
+ 179   2            break;
+ 180   2          case 2:
+ 181   2            Write_CMD(0xC0 + col);
+ 182   2            break;
+ 183   2          case 3:
+ 184   2            Write_CMD(0x94 + col);
+ 185   2            break;
+ 186   2          case 4:
+ 187   2            Write_CMD(0xD4 + col);
+ 188   2            break;
+ 189   2        }
+ 190   1        while(1)
+ 191   1        {
+ 192   2          if(*dat == '\0') break;
+ 193   2          Write_DAT(*dat);
+ 194   2          dat++;
+ 195   2        }
+ 196   1      }
+ 197          
+ 198          void Lcd_Init()
+ 199          {
+ 200   1        Write_CMD(0x38);
+ 201   1        Write_CMD(0x08);
+ 202   1        Write_CMD(0x01);
+ 203   1        Write_CMD(0x06);
+ 204   1        Write_CMD(0x0C);
+ 205   1      }
+ 206          
+ 207          
+ 208          void Write_CMD(unsigned char cmd)
+ 209          {
+ 210   1        GPIO_RS = 0;
+ 211   1        GPIO_RW = 0;
+ 212   1        GPIO_LCD = cmd;
+ 213   1        GPIO_E = 0;
+ 214   1        Delay_ns(1);
+ 215   1        GPIO_E = 1;
+ 216   1        Delay_ns(500);
+ 217   1      }
+ 218          
+ 219          void Write_DAT(unsigned char dat)
+ 220          {
+ 221   1        GPIO_RS = 1;
+ 222   1        GPIO_RW = 0;
+ 223   1        GPIO_LCD = dat;
+ 224   1        GPIO_E = 0;
+ 225   1        Delay_ns(1);
+ 226   1        GPIO_E = 1;
+ 227   1        Delay_ns(500);
+ 228   1      }
+ 229          
+ 230          void Delay_ns(unsigned long ns)
+ 231          {
+ 232   1        while(ns--)
+ 233   1          _nop_();
+ 234   1      }
+ 235          
+ 236          void InterruptTimer0() interrupt 1
+ 237          {
+ 238   1        TH0 = 0xFC;
+ 239   1        TL0 = 0x67; 
+ 240   1        i++;
+C51 COMPILER V9.02   MAIN                                                                  05/17/2022 16:28:44 PAGE 5   
+
+ 241   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    601    ----
+   CONSTANT SIZE    =    158    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
